@@ -5,8 +5,9 @@ N_COMIDAS_POR_FILOSOFO = 5
 LockType = ReentrantLock
 
 const tenedores = [LockType() for _ in 1:NUM_FILOSOFOS]
-
 const estados_actuales = Dict{Int, String}(i => "iniciando" for i in 1:NUM_FILOSOFOS)
+
+const lock_estados = LockType()
 
 mutable struct Filosofo
     id::Int
@@ -21,7 +22,6 @@ function crear_filosofo(id::Int)
 end
 
 function actualizar_estado(p::Filosofo, nuevo_estado::String)
-
     lock(lock_estados) 
     try
         estados_actuales[p.id] = nuevo_estado
@@ -37,7 +37,6 @@ function pensar(p::Filosofo)
 end
 
 function comer(p::Filosofo)
-
     if p.id == NUM_FILOSOFOS
         lock(tenedores[p.tenedor_der])
         lock(tenedores[p.tenedor_izq])
@@ -52,8 +51,14 @@ function comer(p::Filosofo)
         println(">> Filósofo #$(p.id) está comiendo por $(p.comidas_ingeridas)ª vez.")
         sleep(rand(0.5:0.1:1.5))
     finally
-        unlock(tenedores[p.tenedor_der])
-        unlock(tenedores[p.tenedor_izq])
+        # Liberar los tenedores
+        if p.id == NUM_FILOSOFOS
+            unlock(tenedores[p.tenedor_izq])
+            unlock(tenedores[p.tenedor_der])
+        else
+            unlock(tenedores[p.tenedor_der])
+            unlock(tenedores[p.tenedor_izq])
+        end
         println("Filósofo #$(p.id) ha soltado los tenedores.")
     end
 end
