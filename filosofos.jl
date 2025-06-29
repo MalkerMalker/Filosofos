@@ -8,6 +8,7 @@ const tenedores = [LockType() for _ in 1:NUM_FILOSOFOS]
 
 const estados_actuales = Dict{Int, String}(i => "iniciando" for i in 1:NUM_FILOSOFOS)
 
+
 mutable struct Filosofo
     id::Int
     tenedor_izq::Int
@@ -72,11 +73,11 @@ function ciclo_de_vida_filosofo(id::Int)
     println("== Filósofo #$(mi_filosofo.id) está lleno y se va de la mesa. ==")
 end
 
-println("Bienvenidos a la cena de los filósofos.")
+println("Inicio de la cena de los filósofos.")
 
 @threads for i in 1:NUM_FILOSOFOS
     ciclo_de_vida_filosofo(i)
 end
 
-println("\nLa cena ha terminado. Todos los filósofos se fueron satisfechos.")
+println("\nLa cena ha terminado.")
 println("Estado final de la mesa: ", estados_actuales)
