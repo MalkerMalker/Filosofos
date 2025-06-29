@@ -8,7 +8,6 @@ const tenedores = [LockType() for _ in 1:NUM_FILOSOFOS]
 
 const estados_actuales = Dict{Int, String}(i => "iniciando" for i in 1:NUM_FILOSOFOS)
 
-
 mutable struct Filosofo
     id::Int
     tenedor_izq::Int
